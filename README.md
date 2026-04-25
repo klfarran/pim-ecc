@@ -123,3 +123,9 @@ This enables tradeoff analysis between:
 - Reliability improvement
 - Hardware cost
 
+---
+
+## Example plot 
+For simple pim device with 128B register file, 8192B scratchpad \
+<br>
+<img src="figures/pim_state_ecc.png" width=400>
