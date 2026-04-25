@@ -3,6 +3,7 @@ from protection import schemes, policy
 from analysis.metrics import compute_system_metrics
 from analysis.cost_model import compute_cost
 from analysis.simulation import simulate_system, normalize_results, inject_fixed_system
+from plots.plot_results import plot_breakdown, plot_sdc_only, plot_cost_vs_reliability
 
 pim = small_pim()
 
@@ -24,7 +25,8 @@ for name, policy in policies.items():
     print(f"  Latency: {cost['latency']}")
     
     
-TRIALS = 10000
+TRIALS = 1000000
+results = {}
 
 for name, policy in policies.items():
     #sim_results = simulate_system(pim, policy, TRIALS)
@@ -37,6 +39,10 @@ for name, policy in policies.items():
         for k in agg:
             agg[k] += sim_results[k]
     norm = normalize_results(agg, TRIALS * RUNS, len(pim.components())) 
+
+    results[name] = {
+        "sim": norm
+    }
 
     print(f"{name} (Simulation):")
     print(f"  SDC rate: {norm['sdc_rate']}")
@@ -61,3 +67,8 @@ for name, policy in policies.items():
     print(f"  SDC rate: {sdc_rate}")
     print(f"  DUE rate: {due_rate}")
     print(f"  Corrected rate: {corrected_rate}")
+    
+    
+# testing plotting: 
+print(results)
+plot_breakdown(results)

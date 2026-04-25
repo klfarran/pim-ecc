@@ -1,61 +1,50 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
 from config import small_pim, no_protection, balanced, strong
 from analysis.simulation import simulate_system, normalize_results
-from analysis import compute_system_metrics, compute_cost
-
-
-TRIALS = 100000  # increase for smoother curves
-
-
-def run_all_policies():
-    pim = small_pim()
-
-    policies = {
-        "None": no_protection(),
-        "Balanced": balanced(),
-        "Strong": strong()
-    }
-
-    results = {}
-
-    for name, policy in policies.items():
-        sim = simulate_system(pim, policy, TRIALS)
-        norm = normalize_results(sim, TRIALS, len(pim.components()))
-        cost = compute_cost(pim, policy)
-        analytic = compute_system_metrics(pim, policy)
-
-        results[name] = {
-            "sim": norm,
-            "analytic": analytic,
-            "cost": cost
-        }
-
-    return results
+from analysis.metrics import compute_system_metrics
+from analysis.cost_model import compute_cost
 
 
 def plot_breakdown(results):
+    import numpy as np
+    import matplotlib.pyplot as plt
+
     policies = list(results.keys())
+    x = np.arange(len(policies))
+    width = 0.25
+
+    cmap = plt.cm.viridis
+    metric_colors = {
+        "sdc": cmap(0.15),
+        "due": cmap(0.5),
+        "corrected": cmap(0.85)
+    }
 
     sdc = [results[p]["sim"]["sdc_rate"] for p in policies]
     due = [results[p]["sim"]["due_rate"] for p in policies]
     corr = [results[p]["sim"]["corrected_rate"] for p in policies]
 
-    x = range(len(policies))
-
     plt.figure()
 
-    plt.bar(x, sdc, label="SDC")
-    plt.bar(x, due, bottom=sdc, label="DUE")
-    plt.bar(x, corr, bottom=[s + d for s, d in zip(sdc, due)], label="Corrected")
+    # bars grouped by policy, colored by metric
+    plt.bar(x - width, sdc, width, color=metric_colors["sdc"], label="SDC")
+    plt.bar(x, due, width, color=metric_colors["due"], label="DUE")
+    plt.bar(x + width, corr, width, color=metric_colors["corrected"], label="Corrected")
 
     plt.xticks(x, policies)
     plt.yscale("log")
     plt.xlabel("Policy")
     plt.ylabel("Rate")
     plt.title("Fault Outcome Breakdown by Policy")
-    plt.legend()
 
+    plt.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=3
+    )
+
+    plt.tight_layout()
     plt.show()
     
     
