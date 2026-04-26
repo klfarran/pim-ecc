@@ -13,6 +13,9 @@ policies = {
     "Strong": strong()
 }
 
+# baseline (no protection) for normalization
+baseline_area = compute_cost(pim, policies["None"])["area"]
+
 for name, policy in policies.items():
     metrics = compute_system_metrics(pim, policy)
     cost = compute_cost(pim, policy)
@@ -41,9 +44,12 @@ for name, policy in policies.items():
     norm = normalize_results(agg, TRIALS * RUNS, len(pim.components())) 
 
     results[name] = {
-        "sim": norm
+        "sim": norm,
+        "cost": compute_cost(pim, policy)
     }
-
+    
+    results[name]["cost"]["normalized_area"] = results[name]["cost"]["area"] / baseline_area
+    
     print(f"{name} (Simulation):")
     print(f"  SDC rate: {norm['sdc_rate']}")
     print(f"  DUE rate: {norm['due_rate']}")
@@ -70,5 +76,6 @@ for name, policy in policies.items():
     
     
 # testing plotting: 
-print(results)
-plot_breakdown(results)
+#plot_breakdown(results)
+#plot_sdc_only(results)
+plot_cost_vs_reliability(results)
