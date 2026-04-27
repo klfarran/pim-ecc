@@ -32,7 +32,7 @@ def plot_breakdown(results):
 
     plt.xticks(x, policies)
     plt.yscale("log")
-    plt.xlabel("Policy")
+    plt.xlabel("Policy", labelpad=10)
     plt.ylabel("Rate")
     plt.title("Fault Outcome Breakdown by Policy")
 

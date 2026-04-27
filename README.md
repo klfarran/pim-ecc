@@ -128,4 +128,7 @@ This enables tradeoff analysis between:
 ## Example plot 
 For simple pim device with 128B register file, 8192B scratchpad \
 <br>
-<img src="figures/pim_state_ecc.png" width=400>
+<img src="figures/five_policy_breakdown.png" width=400>
+
+<br>
+<img src="figures/rel_vs_cost.png" width=400>

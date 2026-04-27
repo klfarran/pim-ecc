@@ -1,4 +1,4 @@
-from config import small_pim, no_protection, balanced, strong
+from config import small_pim, no_protection, spm_only, minimal, balanced, strong
 from protection import schemes, policy
 from analysis.metrics import compute_system_metrics
 from analysis.cost_model import compute_cost
@@ -9,6 +9,8 @@ pim = small_pim()
 
 policies = {
     "None": no_protection(),
+    "Minimal": minimal(),
+    "SPM Only": spm_only(),
     "Balanced": balanced(),
     "Strong": strong()
 }
@@ -76,6 +78,6 @@ for name, policy in policies.items():
     
     
 # testing plotting: 
-#plot_breakdown(results)
-#plot_sdc_only(results)
+plot_breakdown(results)
+plot_sdc_only(results)
 plot_cost_vs_reliability(results)
