@@ -125,8 +125,15 @@ This enables tradeoff analysis between:
 
 ---
 
-## Example plot 
+## Example plots
 For simple pim device with 128B register file, 8192B scratchpad \
+
+- No Protection = baseline, no ECC anywhere
+- Minimal = Parity for reg file, parity for scratchpad
+- SPM Only = no ECC for reg file, SECDED for scratchpad
+- Balanced = parity for reg file, SECDED for scratchpad
+- Strong = SECDED for reg file, chipkill-style ECC for scratchpad
+
 <br>
 <img src="figures/five_policy_breakdown.png" width=400>
 
