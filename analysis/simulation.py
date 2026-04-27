@@ -1,16 +1,7 @@
 import random
-from .error_model import effective_error_rate
+from .error_model import effective_error_rate, sample_bit_flips, classify_error_bits
 
-
-# simulate system behavior under many trials (10,000) to estimate averages
-# this is probabilistic fault modelling, not fixed error injection
 def simulate_component(component, scheme, trials=10000):
-    """
-    Simulate fault injection for a single component.
-
-    Returns:
-        dict with counts of corrected, due, sdc
-    """
     corrected = 0
     due = 0
     sdc = 0
@@ -18,16 +9,14 @@ def simulate_component(component, scheme, trials=10000):
     error_prob = effective_error_rate(component)
 
     for _ in range(trials):
-        # does an error occur? 
-        # e.g., if error_prob = 0.001, then ~0.1% of iterations will enter this block 
         if random.random() < error_prob:
+            flips = sample_bit_flips()
 
-            r = random.random()
+            outcome = classify_error_bits(flips, scheme)
 
-            # classify outcome
-            if r < scheme.correct_prob:
+            if outcome == "corrected":
                 corrected += 1
-            elif r < scheme.detect_prob:
+            elif outcome == "due":
                 due += 1
             else:
                 sdc += 1
@@ -40,9 +29,7 @@ def simulate_component(component, scheme, trials=10000):
     
     
 def simulate_system(pim_unit, policy, trials=10000):
-    """
-    Simulate entire PIM unit.
-    """
+
     total = {
         "corrected": 0,
         "due": 0,
@@ -80,11 +67,12 @@ def inject_fixed_errors(scheme, num_errors):
     sdc = 0
 
     for _ in range(num_errors):
-        r = random.random()
+        flips = sample_bit_flips()
+        outcome = classify_error_bits(flips, scheme)
 
-        if r < scheme.correct_prob:
+        if outcome == "corrected":
             corrected += 1
-        elif r < scheme.detect_prob:
+        elif outcome == "due":
             due += 1
         else:
             sdc += 1

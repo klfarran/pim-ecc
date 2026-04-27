@@ -1,3 +1,5 @@
+import random
+
 def base_error_rate(component):
     return component.size_bits * component.fit_rate
 
@@ -5,17 +7,22 @@ def base_error_rate(component):
 def effective_error_rate(component):
     return base_error_rate(component) * component.access_rate
 
-# error rate after applying protection scheme 
-def residual_error_rate(component, scheme):
-    eff = effective_error_rate(component)
-    return eff * (1 - scheme.coverage)
 
-# copmute useful metrics like due and sdc
-def classify_error(num_errors, scheme):
-    corrected = num_errors * scheme.correct_prob
-    detected = num_errors * scheme.detect_prob
+def sample_bit_flips():
+    r = random.random()
 
-    due = detected - corrected
-    sdc = num_errors - detected
+    if r < 0.90:
+        return 1
+    elif r < 0.98:
+        return 2
+    else:
+        return 3
+    
 
-    return corrected, due, sdc
+def classify_error_bits(num_flips, scheme):
+    if num_flips <= scheme.correctable_bits:
+        return "corrected"
+    elif num_flips <= scheme.detectable_bits:
+        return "due"
+    else:
+        return "sdc"

@@ -1,5 +1,4 @@
 from config import small_pim, no_protection, spm_only, minimal, balanced, strong
-from protection import schemes, policy
 from analysis.metrics import compute_system_metrics
 from analysis.cost_model import compute_cost
 from analysis.simulation import simulate_system, normalize_results, inject_fixed_system
@@ -18,31 +17,43 @@ policies = {
 # baseline (no protection) for normalization
 baseline_area = compute_cost(pim, policies["None"])["area"]
 
+print("=== ANALYTICAL RESULTS ===")
+
 for name, policy in policies.items():
     metrics = compute_system_metrics(pim, policy)
     cost = compute_cost(pim, policy)
+    num_components = len(pim.components())
+
+    # normalize analytical metrics to per-component rate
+    metrics_norm = {
+        "corrected": metrics["corrected"] / num_components,
+        "due": metrics["due"] / num_components,
+        "sdc": metrics["sdc"] / num_components
+    }
 
     print(f"{name}:")
-    print(f"  SDC: {metrics['sdc']}")
-    print(f"  DUE: {metrics['due']}")
-    print(f"  Corrected: {metrics['corrected']}")
+    print(f"  SDC (analytic): {metrics_norm['sdc']}")
+    print(f"  DUE (analytic): {metrics_norm['due']}")
+    print(f"  Corrected (analytic): {metrics_norm['corrected']}")
     print(f"  Area: {cost['area']}")
     print(f"  Latency: {cost['latency']}")
     
     
+print("\n=== MONTE CARLO SIMULATION ===")
+
 TRIALS = 1000000
+RUNS = 50
+
 results = {}
 
 for name, policy in policies.items():
-    #sim_results = simulate_system(pim, policy, TRIALS)
-    #norm = normalize_results(sim_results, TRIALS, len(pim.components()))
-    
-    RUNS = 50
     agg = {"corrected": 0, "due": 0, "sdc": 0}
+    
     for _ in range(RUNS):
         sim_results = simulate_system(pim, policy, TRIALS)
         for k in agg:
             agg[k] += sim_results[k]
+            
     norm = normalize_results(agg, TRIALS * RUNS, len(pim.components())) 
 
     results[name] = {
@@ -50,6 +61,7 @@ for name, policy in policies.items():
         "cost": compute_cost(pim, policy)
     }
     
+    # calculate normalized area (relative to baseline)
     results[name]["cost"]["normalized_area"] = results[name]["cost"]["area"] / baseline_area
     
     print(f"{name} (Simulation):")
@@ -58,7 +70,7 @@ for name, policy in policies.items():
     print(f"  Corrected rate: {norm['corrected_rate']}")
     
     
-print("\n=== FIXED ERROR INJECTION SANITY CHECK ===")
+print("\n=== FIXED ERROR INJECTION RESULTS ===")
 
 FIXED_ERRORS = 1000000  # per component
 
