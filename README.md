@@ -41,7 +41,9 @@ plots/
 ├── plot_results.py     # Generates evaluation figures
 
 config.py               # Predefined PIM systems and policies
-main.py                 # Entry point for running experiments
+experiments.py          # Given a configuration, runs experiments for analytical + monte carlo simulations
+interactive_runner.py   # Interactive script to let a user define a pim ECC configuration + run experiments
+main.py                 # Entry point for running general experiments
 ```
 
 
@@ -136,6 +138,9 @@ For simple pim device with 128B register file, 8192B scratchpad \
 
 <br>
 <img src="figures/five_policy_breakdown.png" width=400>
+
+<br>
+<img src="figures/sdc_five_policies.png" width=400>
 
 <br>
 <img src="figures/rel_vs_cost.png" width=400>
