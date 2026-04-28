@@ -1,11 +1,12 @@
 import random
 
-def base_error_rate(component):
-    return component.size_bits * component.fit_rate
+def base_error_rate(component, scheme):
+    effective_bits = component.size_bits * scheme.overhead_factor
+    return effective_bits * component.fit_rate
 
-# access rate factored into error rate 
-def effective_error_rate(component):
-    return base_error_rate(component) * component.access_rate
+
+def effective_error_rate(component, scheme):
+    return base_error_rate(component, scheme) * component.access_rate
 
 
 def sample_bit_flips():

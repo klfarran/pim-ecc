@@ -28,7 +28,7 @@ def compute_system_metrics(pim_unit, policy):
 
     for comp in pim_unit.components():
         scheme = policy.get_scheme(comp.name)
-        errors = effective_error_rate(comp)
+        errors = effective_error_rate(comp, scheme)
 
         corrected, due, sdc = classify_expected(errors, scheme)
 

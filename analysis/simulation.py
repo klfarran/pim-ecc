@@ -6,7 +6,7 @@ def simulate_component(component, scheme, trials=10000):
     due = 0
     sdc = 0
 
-    error_prob = effective_error_rate(component)
+    error_prob = effective_error_rate(component, scheme)
 
     for _ in range(trials):
         if random.random() < error_prob:

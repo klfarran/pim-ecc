@@ -14,9 +14,9 @@ from experiments import run_experiment
 def choose_scheme(name):
     print(f"\nChoose protection for {name}:")
     print("  1. none")
-    print("  2. parity")
-    print("  3. secded")
-    print("  4. strong")
+    print("  2. parity (detects: 1 bit, correct: 0 bits)")
+    print("  3. secded (detects: 2 bits, correct: 1 bit)")
+    print("  4. strong (detects: 4 bits, correct: 2 bits)")
 
     while True:
         choice = input("> ").strip()
@@ -25,7 +25,7 @@ def choose_scheme(name):
             "1": NONE,
             "2": PARITY,
             "3": SECDED,
-            "4": STRONG ()
+            "4": STRONG
         }.get(choice)
 
         if scheme is not None:
@@ -37,8 +37,8 @@ def choose_scheme(name):
 def build_pim():
     while True:
         try:
-            rf_size = int(input("RF size (bits): ").strip())
-            spm_size = int(input("SPM size (bits): ").strip())
+            rf_size = int(input("Input register file size (bits): ").strip())
+            spm_size = int(input("Input scratchpad memory size (bits): ").strip())
             break
         except ValueError:
             print("Please enter valid integer sizes.")
@@ -49,7 +49,7 @@ def build_pim():
     if use_cache == "y":
         while True:
             try:
-                cache_size = int(input("Cache size (bits): ").strip())
+                cache_size = int(input("Input cache size (bits): ").strip())
                 cache = StateComponent("Cache", cache_size, 0.5, 1e-9)
                 break
             except ValueError:
