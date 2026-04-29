@@ -128,7 +128,7 @@ This enables tradeoff analysis between:
 ---
 
 ## Example plots
-For simple pim device with 128B register file, 8192B scratchpad \
+For simple pim device with 128b register file, 8192b scratchpad \
 
 - No Protection = baseline, no ECC anywhere
 - Minimal = Parity for reg file, parity for scratchpad
